@@ -1,51 +1,43 @@
-# Checkpoints Day03
+# Báo cáo thực hành Day 3
 
-Mỗi trạm 1 ảnh, 3 điểm; đọc classes.json riêng trước khi tạo task.
+- Mã học viên theo lớp: `2A202603062`
+- Ngày / CVAT local: `12/11/2026` / CVAT local
+- Công cụ đã dùng: CVAT local; nhãn gợi ý từ `auto_task.py` (SegFormer B1 và YOLO26n-seg), sau đó kiểm tra và chỉnh trong CVAT.
 
-## cp1_holes
+## 1. Bài đã nộp
 
-- **Cần làm:** Giữ kính/chi tiết trong mask theo quy tắc task. Dùng ảnh trong `data/checkpoints/cp1_holes/images/`.
-- **Sản phẩm:** `submissions/cp1_holes.zip`, export COCO 1.0.
-- **Cần hiểu:** Phân biệt chi tiết bên trong vật và lỗ nền thật.
-- **Tự kiểm:** đúng ảnh/class của trạm, vùng nhìn thấy, số object, biên; Save, export và mở ZIP kiểm có dữ liệu. Nếu có lỗi thật, ghi vị trí/quy tắc/sửa trong report.
-- **Chấm:** tối đa 3 điểm theo metric loại task và [RUBRIC](RUBRIC.md); chưa có reference không tự ghi điểm.
+| Task | File ZIP đúng tên | Hoàn thành mấy ảnh | Điểm tối đa (coach chấm sau) |
+|---|---|---:|---:|
+| `easy_semantic` | `easy_semantic.zip` | 3/3 | 20 |
+| `medium_instance` | `medium_instance.zip` | 3/3 | 32 |
+| `hard_panoptic` | `hard_panoptic.zip` | 2/2 | 30 |
+| `cp1_holes` | `cp1_holes.zip` | 1/1 | 3 |
+| `cp2_slice` | `cp2_slice.zip` | 1/1 | 3 |
+| `cp5_occlusion` | `cp5_occlusion.zip` | 1/1 | 3 |
+| `cp3_thin` | `cp3_thin.zip` | 1/1 | 3 |
+| `cp4_curb` | `cp4_curb.zip` | 1/1 | 3 |
+| `cp6_coverage` | `cp6_coverage.zip` | 1/1 | 3 |
+| **Tổng tối đa** |  | **14/14 ảnh** | **100** |
 
-## cp2_slice
+## 2. Một quyết định trước khi dùng gợi ý
 
-- **Cần làm:** Tách hai xe sát nhau thành hai instance. Dùng ảnh trong `data/checkpoints/cp2_slice/images/`.
-- **Sản phẩm:** `submissions/cp2_slice.zip`, export COCO 1.0.
-- **Cần hiểu:** Cùng class không đồng nghĩa cùng instance.
-- **Tự kiểm:** đúng ảnh/class của trạm, vùng nhìn thấy, số object, biên; Save, export và mở ZIP kiểm có dữ liệu. Nếu có lỗi thật, ghi vị trí/quy tắc/sửa trong report.
-- **Chấm:** tối đa 3 điểm theo metric loại task và [RUBRIC](RUBRIC.md); chưa có reference không tự ghi điểm.
+- Ảnh, vị trí và object Medium: `000000181542.jpg`, người ở gần giữa-phải ảnh (`person`).
+- Class và quy tắc tôi dùng để chọn biên: Chọn `person`; bám theo đường bao phần cơ thể nhìn thấy và dừng ở ranh với xe/nền, không tự vẽ phần bị che.
+- Nếu dùng gợi ý sau đó: Dùng gợi ý model làm điểm bắt đầu, rồi kiểm tra và chỉnh đường bao theo ảnh. Với object cụ thể này, tôi không lưu lại thứ tự thao tác trước/sau khi xem gợi ý nên không khẳng định đây là object đầu tiên đã tự vẽ trước gợi ý.
 
-## cp3_thin
+## 3. Một lỗi tôi tìm thấy và sửa
 
-- **Cần làm:** Vẽ cột/biển mảnh ở zoom lớn. Dùng ảnh trong `data/checkpoints/cp3_thin/images/`.
-- **Sản phẩm:** `submissions/cp3_thin.zip`, export Segmentation mask 1.1.
-- **Cần hiểu:** Brush quá lớn làm tăng vùng nhãn sai.
-- **Tự kiểm:** đúng ảnh/class của trạm, vùng nhìn thấy, số object, biên; Save, export và mở ZIP kiểm có dữ liệu. Nếu có lỗi thật, ghi vị trí/quy tắc/sửa trong report.
-- **Chấm:** tối đa 3 điểm theo metric loại task và [RUBRIC](RUBRIC.md); chưa có reference không tự ghi điểm.
+- Task/ảnh/vùng: `cp5_occlusion`, ảnh đường phố, góc dưới bên phải — hai taxi vàng sát nhau.
+- Lỗi thuộc loại: gộp-tách.
+- Bằng chứng tôi nhìn thấy: Một đường viền mask bao cả hai taxi, dù ảnh thể hiện hai xe riêng biệt.
+- Quy tắc và hành động sửa: Tách thành hai object `car`; mỗi mask chỉ theo phần nhìn thấy của xe tương ứng, không vẽ xuyên phần bị che.
+- Sau sửa đã Save và export lại chưa? Có. Đã chỉnh trong CVAT, Save và export lại ZIP.
+- Kết quả Summary/scorer cho lỗi này: Chưa có điểm đối chiếu ground truth.
 
-## cp4_curb
+## 4. Ba ca chưa chắc hoặc đã cân nhắc
 
-- **Cần làm:** Vẽ ranh road–sidewalk theo bó vỉa và chức năng. Dùng ảnh trong `data/checkpoints/cp4_curb/images/`.
-- **Sản phẩm:** `submissions/cp4_curb.zip`, export Segmentation mask 1.1.
-- **Cần hiểu:** Không quyết định class chỉ theo màu.
-- **Tự kiểm:** đúng ảnh/class của trạm, vùng nhìn thấy, số object, biên; Save, export và mở ZIP kiểm có dữ liệu. Nếu có lỗi thật, ghi vị trí/quy tắc/sửa trong report.
-- **Chấm:** tối đa 3 điểm theo metric loại task và [RUBRIC](RUBRIC.md); chưa có reference không tự ghi điểm.
-
-## cp5_occlusion
-
-- **Cần làm:** Giữ một instance cho các phần nhìn thấy của cùng vật. Dùng ảnh trong `data/checkpoints/cp5_occlusion/images/`.
-- **Sản phẩm:** `submissions/cp5_occlusion.zip`, export COCO 1.0.
-- **Cần hiểu:** Không vẽ phần bị che; không tách ID vì bị che.
-- **Tự kiểm:** đúng ảnh/class của trạm, vùng nhìn thấy, số object, biên; Save, export và mở ZIP kiểm có dữ liệu. Nếu có lỗi thật, ghi vị trí/quy tắc/sửa trong report.
-- **Chấm:** tối đa 3 điểm theo metric loại task và [RUBRIC](RUBRIC.md); chưa có reference không tự ghi điểm.
-
-## cp6_coverage
-
-- **Cần làm:** Phủ vùng nhìn thấy thuộc schema. Dùng ảnh trong `data/checkpoints/cp6_coverage/images/`.
-- **Sản phẩm:** `submissions/cp6_coverage.zip`, export Segmentation mask 1.1.
-- **Cần hiểu:** Coverage cần đối chiếu class, không tô ép vùng chưa chắc.
-- **Tự kiểm:** đúng ảnh/class của trạm, vùng nhìn thấy, số object, biên; Save, export và mở ZIP kiểm có dữ liệu. Nếu có lỗi thật, ghi vị trí/quy tắc/sửa trong report.
-- **Chấm:** tối đa 3 điểm theo metric loại task và [RUBRIC](RUBRIC.md); chưa có reference không tự ghi điểm.
+| Ảnh/vị trí | Hai cách hiểu có thể | Quy tắc/chứng cứ | Quyết định hoặc câu hỏi cho coach |
+|---|---|---|---|
+| `cp4_curb`, dải cỏ có túi rác giữa bó vỉa và vỉa hè bê tông | Gộp vào `sidewalk` hoặc để ngoài hai class | Task chỉ có `road` và `sidewalk`; dải cỏ và túi rác không phải mặt đường hay phần vỉa hè đi bộ | Để ngoài mask `road`/`sidewalk`; chỉ gán vùng phù hợp rõ ràng với class. |
+| `cp4_curb`, phần bê tông dưới xe trắng đỗ bên phải | `sidewalk` hoặc lối xe ra vào | Xét chức năng, tính liên tục của vỉa hè và bó vỉa; màu bê tông riêng lẻ chưa đủ kết luận | Nếu ảnh không thể hiện rõ chức năng, hỏi coach thay vì ép gán lớp. |
+| `cp5_occlusion`, xe máy bị người ngồi che một phần | Gộp người với xe máy hoặc tách riêng | Người và xe máy là hai vật; vật bị che vẫn là một instance nhưng chỉ vẽ phần nhìn thấy | Tách người và xe máy thành hai object riêng; không đoán phần xe bị che. |
